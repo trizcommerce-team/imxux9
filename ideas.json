@@ -4667,5 +4667,10 @@
    "군밤 + 우유"
   ]
  },
- "noMake": true
+ "noMake": true,
+ "votes": {
+  "seller": true,
+  "down": "힘들어요",
+  "downIcon": "😥"
+ }
 }

@@ -6,5 +6,6 @@
   "icon_char": "효",
   "year": 2026,
   "per_tab": true,
-  "aliases": {"올리셀": "무중력팩"}
+  "aliases": {"올리셀": "무중력팩"},
+  "rename": {"무중력팩": "올리셀"}
 }

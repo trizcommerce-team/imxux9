@@ -1185,6 +1185,10 @@ def main():
                         and p["round"] in e["text"].replace(" ", "")), None)
             if hit:
                 e["product"], e["_id"] = hit["name"], hit["id"]
+    def alias(s):  # config "aliases": 캘린더에 다른 이름으로 적힌 제품 (예: 올리셀 = 무중력팩)
+        for a, b in (CONFIG.get("aliases") or {}).items():
+            s = s.replace(a, b)
+        return s
     def near(p, e):  # 제품 탭의 날짜들과 캘린더 칸 사이 거리(일)
         ds = [s["date"] for s in p["slots"] if s["date"]] + (p["period"] or [])
         return min((abs((dt.date.fromisoformat(d) - dt.date.fromisoformat(x)).days)
@@ -1192,7 +1196,7 @@ def main():
     for e in events:  # 여러 날에 걸쳐 제품명만 적힌 칸("방탄커피", "아르히 헤어 2종")은 날짜가 가까운 그 제품 탭으로
         if e["product"] or e["end"] <= e["date"]:
             continue
-        t = norm(e["text"])
+        t = norm(alias(e["text"]))
         cands = [p for p in products if len(norm(p["name"])) >= 2 and (norm(p["name"]) in t or t in norm(p["name"]))
                  and near(p, e) <= 21]
         if cands:
@@ -1220,7 +1224,7 @@ def main():
         order_info(p)
     scan_close_times(sheets, products, product_sheets)  # 공구 마감·결제창 마감 시각 (시트 어디에 적혀 있든)
     for e in events:  # "철분제 D-1 (릴스)" 처럼 제품명 + D-n 이 적힌 하루짜리 칸 → 그 제품 (공구 기간 근처일 때만)
-        m = EVT_LINE.match(e["text"]) if not e["product"] and e["end"] == e["date"] else None
+        m = EVT_LINE.match(alias(e["text"])) if not e["product"] and e["end"] == e["date"] else None
         if not m or len(norm(m[1])) < 2:
             continue
         d = dt.date.fromisoformat(e["date"])
